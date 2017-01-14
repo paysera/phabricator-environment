@@ -1,0 +1,33 @@
+version: '2'
+services:
+  phabricator:
+    image: hachque/phabricator
+    ports:
+      - "2443:443"
+      - "2280:80"
+      - "2222:22"
+    volumes:
+      - phabricator_fingerprints:/var/fingerprints
+      - phabricator_repo:/var/repo
+      - phabricator_extensions:/srv/phabricator/phabricator/src/extensions
+    depends_on:
+      - mysql
+    env_file:
+      - .env
+    environment:
+      - PHABRICATOR_REPOSITORY_PATH=/var/repo
+      - PHABRICATOR_HOST_KEYS_PATH=/var/fingerprints
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=root
+      - MYSQL_PASS=pass
+  mysql:
+    build: mysql
+    volumes:
+      - mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=pass
+volumes:
+  phabricator_fingerprints: {}
+  phabricator_repo: {}
+  phabricator_extensions: {}
+  mysql: {}
